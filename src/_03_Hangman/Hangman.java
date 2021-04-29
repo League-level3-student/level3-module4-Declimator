@@ -9,26 +9,27 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class Hangman implements KeyListener {
+public class Hangman {
 	JFrame frame;
 	JPanel panel;
 	JLabel label;
 
 	public static void main(String[] args) {
 		Hangman h = new Hangman();
-		h.hman();
+		h.setup();
 	}
-
-	public void hman() {
+	public void setup() {
 		frame = new JFrame();
 		panel = new JPanel();
 		label = new JLabel();
 		frame.add(panel);
 		panel.add(label);
 		label.setText("");
-		panel.addKeyListener(this);
 		frame.setVisible(true);
-		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		hman();
+	}
+	public void hman() {
 		Stack<String> s = new Stack<String>();
 		int length = Integer.parseInt(JOptionPane.showInputDialog("Enter the number of words to guess (1-100)"));
 		while (length < 1 || length > 100) {
@@ -42,30 +43,52 @@ public class Hangman implements KeyListener {
 			System.out.println(s.get(i));
 		}
 		//
+		int counter = 0;
 		String word;
-		while (!s.isEmpty()) {
+		String vword;
+		String state;
+		boolean correct = false;
+		int guesses = 10;
+		while (!s.isEmpty() && guesses > 0) {
 			word = s.pop();
+			vword = "";
+			label.setText("");
 			for (int i = 0; i < word.length(); i++) {
-				label.setText(label.getText() + "_ ");
+				vword = vword + "_";
+				label.setText(label.getText() + vword.charAt(i) + " ");
 			}
-			frame.pack();
+			while (!vword.equalsIgnoreCase(word) && guesses > 0) {
+				frame.pack();
+				String guess = JOptionPane.showInputDialog("Guess a letter or word (" + guesses + " guesses remaining)");
+				for (int i = 0; i < word.length() - guess.length() + 1; i++) {
+					if (word.substring(i, i + guess.length()).equalsIgnoreCase(guess)) {
+						vword = vword.substring(0, i) + guess + vword.substring(i + guess.length(), vword.length());
+					correct = true;
+					}
+				}
+				if(correct == false) {
+					guesses-=1;
+				}
+				label.setText("");
+				for (int i = 0; i < word.length(); i++) {
+					label.setText(label.getText() + vword.charAt(i) + " ");
+				}
+				correct = false;
+			}
+			counter++;
 		}
-	}
-
-	@Override
-	public void keyPressed(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-
+		if(guesses == 0) {
+			state = "lost";
+		} else {
+			state = "won";
+		}
+		int repeat = JOptionPane.showConfirmDialog(null, "You " + state + ". Play again?");
+		if(repeat == 1) {
+			label.setText("Game Over. Words Guessed: " + counter);
+			frame.pack();
+		} else {
+			label.setText("");
+			hman();
+		}
 	}
 }
