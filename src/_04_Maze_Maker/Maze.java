@@ -1,4 +1,5 @@
 package _04_Maze_Maker;
+import java.awt.Color;
 import java.awt.Graphics;
 
 public class Maze {
@@ -17,8 +18,8 @@ public class Maze {
         //    using row and col as the cell location
         for(int i = 0; i < rows; i++) {
         	for(int j = 0; j < cols; j++) {
-        		maze[i][j].setRow(i);
-        		maze[i][j].setCol(j);
+        		maze[i][j] = new Cell(i, j);
+        		
         	}
         }
     }
@@ -26,11 +27,16 @@ public class Maze {
     // 4. This method iterates through the cells and draws them
     public void draw(Graphics g) {
 
+    	for(int i = 0; i < rows; i++) {
+    		for(int j = 0; j < cols; j++) {
+    	    	maze[i][j].draw(g);
+    		}
+    	}
     }
 
     // 5. This method returns the selected cell
     public Cell getCell(int row, int col){
-        return  null;
+        return  maze[row][col];
     }
 
     public int getRows() {
