@@ -52,7 +52,7 @@ public class MazeMaker {
 			removeWalls(currentCell, unvisited.get(rand));
 			// C4. make the new cell the current cell and SET it as visited
 			currentCell = unvisited.get(rand);
-		
+			currentCell.setBeenVisited(true);
 			// C5. call the selectNextPath method with the current cell
 			selectNextPath(currentCell);
 			// D. if all neighbors are visited
